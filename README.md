@@ -1,1 +1,1 @@
-# Projecto para practicar c++ y glsl
+# Proyecto para practicar c++ y glsl
