@@ -17,31 +17,34 @@ void processInput(GLFWwindow *window) {
 }
 
 void renderLoop(GLFWwindow *window, unsigned int VAOS[2]) {
+  const int VAOS_LENGHT = 2;
   //Logic to render each VAO (form) each duration_in_seconds whitout blocking processInput()
   auto duration_in_seconds = std::chrono::duration<double>(1);
-  auto start = std::chrono::system_clock::now() - duration_in_seconds;
+  auto start = std::chrono::system_clock::now() - duration_in_seconds * 2;
   int step = 0;
   while (!glfwWindowShouldClose(window)) {
     processInput(window);
     glfwPollEvents();
     if ((std::chrono::system_clock::now() - start) > duration_in_seconds) {
       start = std::chrono::system_clock::now();
-
-      glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-      glClear(GL_COLOR_BUFFER_BIT);
-      //Each duration_in_seconds one of this forms is drawn
-      if (step == 0) {
-        glBindVertexArray(VAOS[0]);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
-        step++;
-      } else {
+      step++;
+      //Restart step if reached end of array
+      if (step == VAOS_LENGHT) {
         step = 0;
-        glBindVertexArray(VAOS[1]);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
       }
-      //Render what was drawn in the back buffer
-      glfwSwapBuffers(window);
     }
+    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+    //Each duration_in_seconds one of this forms is drawn
+    if (step == 0) {
+      glBindVertexArray(VAOS[0]);
+      glDrawArrays(GL_TRIANGLES, 0, 3);
+    } else {
+      glBindVertexArray(VAOS[1]);
+      glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    }
+    //Render what was drawn in the back buffer
+    glfwSwapBuffers(window);
   }
 }
 
